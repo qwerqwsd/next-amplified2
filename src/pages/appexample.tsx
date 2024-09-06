@@ -3,8 +3,7 @@ import "./../app/globals.css";
 import { useState, useEffect, useCallback } from 'react'
 import { BiCalendar } from "react-icons/bi"
 import Search from "./../components/Search"
-import AddAppointment from "./../components/AddAppointment"
-import AppointmentInfo from "./../components/AppointmentInfo"
+
 import BookstoreInfo from "./../components/bookstorelist"
 import ViewDetailPage from "./../components/viewDetail"
 
