@@ -44,6 +44,57 @@ export default function App() {
     client.models.Todo.delete({ id });
   }
 
+const getReservations = async () => {
+  try {
+    const response = await fetch('http://54.180.232.29:8080/reservations?bookstore=example_bookstore&date=2023-09-05');
+    console.log(response)
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    console.log('Success:', data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+useEffect(() => {
+  getReservations();
+
+}, []);// Call this function where neededs
+
+useEffect(()=>{
+  postReservation();
+},[])
+const postReservation = async () => {
+  try {
+    const response2 = await fetch('http://54.180.232.29:8080/reservations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        bookstore: 'MyBookstore',
+        date: '2024-09-01',
+        time: '14:00',
+        customer: 'John Doe',
+      }),
+    });
+    console.log(response2)
+    if (!response2.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response2.json();
+    console.log('Success:', data);
+    console.log(data)
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+// Call this function where needed
+
   return (
     <>
       <Authenticator>
@@ -51,6 +102,8 @@ export default function App() {
 
           return (
             <main>
+
+              {/* <h2 className='p-2 bg-red-500'>here</h2> */}
               <h1>{user?.signInDetails?.loginId}'s todos</h1>
 
               <button onClick={createTodo}>+ new</button>
