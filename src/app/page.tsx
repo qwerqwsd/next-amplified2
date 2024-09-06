@@ -119,7 +119,7 @@ const postReservation = async () => {
                   Review next steps of this tutorial.
                 </a>
               </div>
-              <button onClick={() => { signOut()}}>Sign out</button>
+              <button onClick={() => { if (signOut) signOut(); }}>Sign out</button>
             </main>
           );
         }}
