@@ -51,7 +51,9 @@ const App: React.FC = () => {
       return (
         safeToLowerCase(stores.FCLTY_NM).includes(query.toLowerCase()) ||
         safeToLowerCase(stores.LCLAS_NM).includes(query.toLowerCase()) ||
-        safeToLowerCase(stores.RSTDE_GUID_CN).includes(query.toLowerCase())
+        // safeToLowerCase(stores.RSTDE_GUID_CN).includes(query.toLowerCase())
+        safeToLowerCase(stores.OPTN_DC).includes(query.toLowerCase())
+
       )
     }
   ).sort((a, b) => {

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./../app/globals.css";
-// Declare the kakao namespace to avoid TypeScript errors
+import { Bookstores } from './bookstorelist';
+import { BiCurrentLocation } from "react-icons/bi";
+
 declare global {
   interface Window {
     kakao: any;
@@ -15,56 +17,131 @@ interface Place {
 
 type KakaoMapProps = {
   className?: string;
+  latitude: number;
+  longitude: number;
+  name: string;
 };
 
-
-export const KakaoMap: React.FC<KakaoMapProps> = ({className}) => {
+export const KakaoMap: React.FC<KakaoMapProps> = ({ className, latitude, longitude, name }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<any>(null);
   const [level, setLevel] = useState<number>(3);
   const [clusterer, setClusterer] = useState<any>(null);
   const [places, setPlaces] = useState<Place[]>([]);
   const [keyword, setKeyword] = useState<string>("");
+  const [bookstoreList, setBookstoreList] = useState<Bookstores[]>([]);
+  const [userPosition, setUserPosition] = useState<any>(null);
+  const [overlay, setOverlay] = useState<any>(null); // overlay 상태 추가
 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/data/bookstore.json');
+        const data = await response.json();
+        setBookstoreList(data);
+      } catch (error) {
+        console.error('Error fetching bookstore data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  
+  
   useEffect(() => {
     const loadKakaoMap = () => {
       const kakaoMapScript = document.createElement("script");
       kakaoMapScript.async = false;
-      kakaoMapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=700d399006256f95732f06b19c046ba5&libraries=services,clusterer&autoload=false`;
+      kakaoMapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=9b2ae1f521a560a249e877c85b8a54e2&libraries=services,clusterer&autoload=false`;
       document.head.appendChild(kakaoMapScript);
-
+  
       const onLoadKakaoAPI = () => {
         window.kakao.maps.load(() => {
           const container = mapRef.current;
           const options = {
-            center: new window.kakao.maps.LatLng(33.450701, 126.570667),
+            center: new window.kakao.maps.LatLng(latitude || 37.5652, longitude || 126.9774),
             level: level,
           };
-
           const newMap = new window.kakao.maps.Map(container, options);
           setMap(newMap);
-
-          // Initialize Marker Clusterer
+          
+          // 내 위치 표시
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+              const userLat = position.coords.latitude;
+              const userLon = position.coords.longitude;
+  
+              const userPosition = new window.kakao.maps.LatLng(userLat, userLon);
+              const userMarker = new window.kakao.maps.Marker({
+                position: userPosition,
+                title: '내 위치',
+              });
+              userMarker.setMap(newMap); // 지도에 마커 추가
+              const userLatLng = new window.kakao.maps.LatLng(userLat, userLon);
+              setUserPosition(userLatLng); // 사용자 위치 저장
+              // 지도 중심을 내 위치로 설정
+              newMap.setCenter(userPosition);
+            }, (error) => {
+              console.error("Geolocation error: ", error);
+            });
+          } else {
+            console.error("Geolocation is not supported by this browser.");
+          }
+  
           const newClusterer = new window.kakao.maps.MarkerClusterer({
             map: newMap,
             averageCenter: true,
-            minLevel: 10,
+            minLevel: 6,
           });
           setClusterer(newClusterer);
+        
+          const newOverlay = new window.kakao.maps.CustomOverlay({
+            map: newMap,
+            position: new window.kakao.maps.LatLng(0, 0),
+            content: '<div style="padding:5px; background-color:white; border:1px solid black; border-radius:5px;">Overlay</div>',
+            yAnchor: 1,
+            zIndex: 1,
+          });
+          setOverlay(newOverlay);
 
+
+          const markers = bookstoreList.map(data => {
+            const markerPosition = new window.kakao.maps.LatLng(data.FCLTY_LA, data.FCLTY_LO);
+            return new window.kakao.maps.Marker({
+              position: markerPosition,
+              // title: data.title
+            });
+            // 마커에 mouseover 이벤트 추가
+            window.kakao.maps.event.addListener(markerPosition, 'mouseover', () => {
+              const position = markerPosition.getPosition();
+              newOverlay.setPosition(position);
+              newOverlay.setMap(newMap);
+              newOverlay.setContent(`<div style="padding:5px;">${name}</div>`);
+            });
+
+            // 마커에 mouseout 이벤트 추가
+            window.kakao.maps.event.addListener(markerPosition, 'mouseout', () => {
+              newOverlay.setMap(null);
+            });
+
+
+
+
+          });
+          
+          newClusterer.addMarkers(markers);
           addCustomControls(newMap);
-          addMarkers(newMap, newClusterer);
         });
       };
-
+  
       kakaoMapScript.addEventListener("load", onLoadKakaoAPI);
-
       return () => kakaoMapScript.removeEventListener("load", onLoadKakaoAPI);
     };
-
+  
     loadKakaoMap();
-  }, [level]);
-
+  }, [level, bookstoreList]);
   useEffect(() => {
     if (map) {
       map.setLevel(level);
@@ -87,66 +164,18 @@ export const KakaoMap: React.FC<KakaoMapProps> = ({className}) => {
     map.addControl(mapTypeControl, window.kakao.maps.ControlPosition.TOPRIGHT);
   };
 
-  const addMarkers = (map: any, clusterer: any) => {
-    const positions = [
-      {
-        title: "Marker 1",
-        latlng: new window.kakao.maps.LatLng(33.450701, 126.570667),
-        content: "This is Marker 1",
-      },
-      {
-        title: "Marker 2",
-        latlng: new window.kakao.maps.LatLng(33.450936, 126.569477),
-        content: "This is Marker 2",
-      },
-      {
-        title: "Marker 3",
-        latlng: new window.kakao.maps.LatLng(33.450879, 126.57208),
-        content: "This is Marker 3",
-      },
-    ];
-
-    const markers = positions.map((position) => {
-      const imageSrc =
-        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
-      const imageSize = new window.kakao.maps.Size(24, 35);
-      const markerImage = new window.kakao.maps.MarkerImage(
-        imageSrc,
-        imageSize
-      );
-
-      const marker = new window.kakao.maps.Marker({
-        map: map,
-        position: position.latlng,
-        title: position.title,
-        image: markerImage,
+  const addMarkers = (places: Place[]) => {
+    if (clusterer) {
+      clusterer.clear(); // 기존 마커 제거
+      const markers = places.map((place) => {
+        const marker = new window.kakao.maps.Marker({
+          position: place.latlng,
+          title: place.title,
+        });
+        return marker;
       });
-
-      const overlayContent = document.createElement("div");
-      overlayContent.className = "custom-overlay";
-      overlayContent.innerHTML = `
-        <div style="padding:5px;background:white;border:1px solid black;">
-          <h4>${position.title}</h4>
-          <p>${position.content}</p>
-        </div>`;
-      const overlay = new window.kakao.maps.CustomOverlay({
-        content: overlayContent,
-        position: position.latlng,
-        yAnchor: 1,
-      });
-
-      window.kakao.maps.event.addListener(marker, "click", () => {
-        overlay.setMap(map);
-      });
-
-      window.kakao.maps.event.addListener(map, "click", () => {
-        overlay.setMap(null);
-      });
-
-      return marker;
-    });
-
-    clusterer.addMarkers(markers);
+      clusterer.addMarkers(markers); // 새로운 마커 추가
+    }
   };
 
   const searchPlaces = () => {
@@ -160,20 +189,36 @@ export const KakaoMap: React.FC<KakaoMapProps> = ({className}) => {
           address: place.road_address_name || place.address_name,
         }));
         setPlaces(newPlaces);
-
+        addMarkers(newPlaces); // 마커 추가
         newPlaces.forEach((place) => {
           bounds.extend(place.latlng);
         });
         map.setBounds(bounds);
       } else {
-        alert("Search failed.");
+        alert("검색 결과를 찾을 수 없습니다.");
       }
     });
   };
+  
+  const goToUserLocation = () => {
+    if (map && userPosition) {
+      map.setLevel(3);
+      map.panTo(userPosition);
+    } else {
+      alert("위치 정보를 가져올 수 없습니다.");
+    }
+  };
 
   return (
-    
-    <main className="w-full flex flex-col items-left  pt-14 relative">
+    <main className="w-full flex flex-col items-left relative">
+                <button
+            onClick={goToUserLocation}
+            className="absolute bottom-4 right-4 px-1 py-1 bg-green-500 hover:bg-green-200 text-white rounded"
+          >
+            <BiCurrentLocation />
+
+            
+          </button>
       <div className="absolute z-50 mb-4 pt-4 pl-4">
         <div className="flex">
           <input
@@ -189,11 +234,13 @@ export const KakaoMap: React.FC<KakaoMapProps> = ({className}) => {
           >
             검색
           </button>
-        </div>
 
+
+        </div>
+  
         {places.length > 0 && (
           <div className="w-full mt-4 absolute">
-            <ul className="absolute py-4 px-4 rounded-2xl min-w-60 special-shadow max-h-[60vh] overflow-y-auto">
+            <ul className="absolute py-4 px-4 rounded-2xl min-w-60 special-shadow max-h-[60] overflow-y-auto">
               {places.map((place, index) => (
                 <li key={index} className="mb-4 ">
                   <button
@@ -217,7 +264,6 @@ export const KakaoMap: React.FC<KakaoMapProps> = ({className}) => {
         className="w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]"
       ></div>
     </main>
-    
   );
 };
 

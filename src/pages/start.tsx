@@ -37,7 +37,7 @@ const Start: React.FC<AppProps> = ({ Component, pageProps }) => {
                 </p>
               </div>              
             <Link
-            href="/start"
+            href="/app"
             className=""
             >
             <button className="bookButton w-40 py-3 font-semibold text-xl">

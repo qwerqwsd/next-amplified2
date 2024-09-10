@@ -18,7 +18,7 @@ const Result: React.FC = () => {
     const searchPlaces = () => {}
     return(<>
           <NavComponent className="fixed z-50" />
-    <main className="w-full flex flex-col items-center pt-14 relative">
+    <main className="w-full flex flex-col items-center pt-14 relative z-10">
       <div className="absolute z-50 mb-4 pt-4 justify-center w-full">
         <div className="flex justify-center mb-2">
           <input

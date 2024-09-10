@@ -136,22 +136,6 @@ export const NavComponent: React.FC<NavComponentProps> = ({className}) => {
                   className="flex items-center justify-center block py-2 px-3 text-white bg-green-600 rounded md:bg-transparent md:text-slate-700 hover:md:text-green-700 md:p-0 dark:text-white md:dark:text-green-500 hover:md:underline hover:md:underline-offset-3"
                   aria-current="page"
                 >
-                  Home
-                </a>
-              </li>
-              <li className="flex">
-                <a
-                  href="#"
-                  className="flex items-center justify-center block py-2 px-3 text-white bg-green-600 rounded md:bg-transparent md:text-slate-700 hover:md:text-green-700 md:p-0 dark:text-white md:dark:text-green-500 hover:md:underline hover:md:underline-offset-3"
-                >
-                  About
-                </a>
-              </li>
-              <li className="flex">
-                <a
-                  href="#"
-                  className="flex items-center justify-center block py-2 px-3 text-white bg-green-600 rounded md:bg-transparent md:text-slate-700 hover:md:text-green-700 md:p-0 dark:text-white md:dark:text-green-500 hover:md:underline hover:md:underline-offset-3"
-                >
                   이용 방법
                 </a>
               </li>
@@ -160,8 +144,25 @@ export const NavComponent: React.FC<NavComponentProps> = ({className}) => {
                   href="#"
                   className="flex items-center justify-center block py-2 px-3 text-white bg-green-600 rounded md:bg-transparent md:text-slate-700 hover:md:text-green-700 md:p-0 dark:text-white md:dark:text-green-500 hover:md:underline hover:md:underline-offset-3"
                 >
-                  <p>책방 찾기</p>
+                  책방 
                 </a>
+              </li>
+              <li className="flex">
+              <Link
+            href="/map"
+                
+                  className="flex items-center justify-center block py-2 px-3 text-white bg-green-600 rounded md:bg-transparent md:text-slate-700 hover:md:text-green-700 md:p-0 dark:text-white md:dark:text-green-500 hover:md:underline hover:md:underline-offset-3"
+                >
+                  책방 지도
+                </Link>
+              </li>
+              <li className="flex">
+              <Link
+            href="/app"
+                  className="flex items-center justify-center block py-2 px-3 text-white bg-green-600 rounded md:bg-transparent md:text-slate-700 hover:md:text-green-700 md:p-0 dark:text-white md:dark:text-green-500 hover:md:underline hover:md:underline-offset-3"
+                >
+                  <p>책방 찾기</p>
+                </Link>
               </li>
               <li className="flex">
                 <a
