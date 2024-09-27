@@ -3,6 +3,9 @@ import "./../app/globals.css";
 import { useState, useEffect, useCallback } from 'react'
 import { BiCalendar } from "react-icons/bi"
 import Search from "./../components/Search"
+import { NavComponent } from "../components/nav";
+import Link from "next/link";
+import { useAuth } from '../hooks/useAuth';
 
 import BookstoreInfo from "./../components/bookstorelist"
 import ViewDetailPage from "./../components/viewDetail"
@@ -33,6 +36,8 @@ export interface Bookstore{
 export type OrderBy = "asc" | "desc";
 
 const App: React.FC = () => {
+  const { isLoggedIn, userInfo, logout } = useAuth();
+
   const [bookstoreList, setBookstoreList] = useState<Bookstore[]>([]);
   const [query, setQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<keyof Bookstore>("FCLTY_NM");
@@ -84,13 +89,17 @@ const App: React.FC = () => {
 
   return (
     <>
-    <div className="App container mx-auto mt-3 font-thin">
+      
+<div className="App ">
+<NavComponent className="fixed z-[9999] mt-[-62px]" isLoggedIn={isLoggedIn} username={userInfo ? userInfo.username : ''} logout={logout}/>
+    <div className="w-[95%] md:w-[80%] mx-auto mt-[62px] font-thin">
       <Search query={query}
         onQueryChange={(myQuery: string) => setQuery(myQuery)}
         orderBy={orderBy}
         onOrderByChange={(myOrder: OrderBy) => setOrderBy(myOrder)}
         sortBy={sortBy}
         onSortByChange={(mySort: keyof Bookstore) => setSortBy(mySort)}
+        toggleShow={true}
       />
 
       <ul className="divide-y divide-gray-200">
@@ -98,6 +107,7 @@ const App: React.FC = () => {
           <BookstoreInfo key={bookstore.ESNTL_ID} bookstores={bookstore} viewDetail={ViewDetailPage}/>
         ))}
       </ul>
+    </div>
     </div>
     </>
   );

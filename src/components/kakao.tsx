@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./../app/globals.css";
-import { Bookstores } from './bookstorelist';
+import { Bookstore } from '../pages/app';
 import { BiCurrentLocation } from "react-icons/bi";
 
 declare global {
@@ -29,7 +29,7 @@ export const KakaoMap: React.FC<KakaoMapProps> = ({ className, latitude, longitu
   const [clusterer, setClusterer] = useState<any>(null);
   const [places, setPlaces] = useState<Place[]>([]);
   const [keyword, setKeyword] = useState<string>("");
-  const [bookstoreList, setBookstoreList] = useState<Bookstores[]>([]);
+  const [bookstoreList, setBookstoreList] = useState<Bookstore[]>([]);
   const [userPosition, setUserPosition] = useState<any>(null);
   const [overlay, setOverlay] = useState<any>(null); // overlay 상태 추가
 
@@ -54,7 +54,7 @@ export const KakaoMap: React.FC<KakaoMapProps> = ({ className, latitude, longitu
     const loadKakaoMap = () => {
       const kakaoMapScript = document.createElement("script");
       kakaoMapScript.async = false;
-      kakaoMapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=9b2ae1f521a560a249e877c85b8a54e2&libraries=services,clusterer&autoload=false`;
+      kakaoMapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=c4e6698263a1f6e60d1a4d9ca06fc98a&libraries=services,clusterer&autoload=false`;
       document.head.appendChild(kakaoMapScript);
   
       const onLoadKakaoAPI = () => {
@@ -213,10 +213,10 @@ export const KakaoMap: React.FC<KakaoMapProps> = ({ className, latitude, longitu
     <main className="w-full flex flex-col items-left relative">
                 <button
             onClick={goToUserLocation}
-            className="absolute bottom-4 right-4 px-1 py-1 bg-green-500 hover:bg-green-200 text-white rounded"
+            className="absolute bottom-4 right-4 px-2 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded z-50 text-2xl"
           >
             <BiCurrentLocation />
-
+            
             
           </button>
       <div className="absolute z-50 mb-4 pt-4 pl-4">

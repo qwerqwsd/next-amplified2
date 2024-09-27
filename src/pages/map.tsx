@@ -1,20 +1,24 @@
 "use client";
-import type { Metadata } from 'next'
-import { KakaoMap } from "../components/kakao";
+
+import { KakaoMap } from "../components/kakao2";
 import { NavComponent } from "../components/nav";
 
 import React, { useState } from "react";
-import { Map, CustomOverlayMap } from "react-kakao-maps-sdk";
+import { useAuth } from '../hooks/useAuth';
+
 
 
 const Start: React.FC = () => {
+  const { isLoggedIn, userInfo, logout } = useAuth();
+
   const [level, setLevel] = useState<number>(3);
 
   return (
     <>
-      <NavComponent className="fixed z-50" />
-      <main className="w-full flex flex-col items-center justify-center pt-14">
-      <KakaoMap className="w-20 h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]" latitude={0} longitude={0} name=""/>
+      <NavComponent className="fixed z-50" isLoggedIn={isLoggedIn} logout={logout} username={userInfo ? userInfo.username : ''}/>
+      <main className="w-full flex flex-col items-center justify-center mt-8 bg-white">
+        
+      <KakaoMap className="w-[100vw] h-[97vh]" bookstore={null} latitude={0} longitude={0} name=""/>
       </main>
     </>
   );
