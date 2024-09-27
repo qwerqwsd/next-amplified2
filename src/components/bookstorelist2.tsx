@@ -2,6 +2,7 @@ import React from 'react';
 import { BiTrash } from "react-icons/bi";
 import ViewDetailPage from "./viewDetail";
 import { Bookstore } from '../pages/app';
+// import "./../app/globals.css";
 
 
 interface AppointmentInfoProps {

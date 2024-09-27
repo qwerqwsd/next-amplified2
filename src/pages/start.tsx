@@ -17,8 +17,8 @@ import { BiCurrentLocation, BiChevronUp, BiChevronDown } from "react-icons/bi";
 import BookstoreListSkeleton from "../components/BookstoreListSkeleton";
 import Gradient from '../components/gradient'
 
-const instance_th = axios.create({
-  baseURL: "http://k8s-default-bookstor-601da9da3c-1598983671.ap-northeast-2.elb.amazonaws.com",
+const instance_ai = axios.create({
+  baseURL: "https://www.taehyun35802.shop",
 });
 
 
@@ -34,19 +34,65 @@ const Start: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [isLoading, setIsLoading] = useState(false);
 
 
-
-
-
-  
   const categories = [
-    "편안한",
-    "유럽풍의",
-    "맥주",
-    "좋은 경치",
-    "넣고 싶은 거 넣어",
-    "이게 뭐야",
-  ];
-
+    "모임",
+    "디저트",
+    "상점",
+    "전문",
+    "중간",
+    "아늑한",
+    "도시",
+    "커피",
+    "요리",
+    "방법",
+    "소품",
+    "파티",
+    "콩",
+    "방",
+    "분위기",
+    "시설",
+    "임대",
+    "프로젝터",
+    "사람들",
+    "구매",
+    "음악",
+    "객실",
+    "서비스",
+    "맛",
+    "보다",
+    "대기",
+    "작성자",
+    "쿠키",
+    "성분",
+    "입구",
+    "회의",
+    "행사",
+    "생활",
+    "라이브러리",
+    "생성",
+    "소유자",
+    "그룹",
+    "기획",
+    "월",
+    "출판",
+    "실내",
+    "도서관",
+    "활동",
+    "숲",
+    "시",
+    "이벤트",
+    "차",
+    "설탕",
+    "테라스",
+    "사진",
+    "세미나",
+    "하우스",
+    "클럽",
+    "방식",
+    "좌석",
+    "체험",
+    "음식"
+];
   const getFacilityInfo = (
     FCLTY_NM: string
   ): { name: string | null; description: string | null } => {
@@ -78,34 +124,38 @@ const handleSearch = async () => {
     keyword: isKeyword
   });
 
-  try {
-    const response = await fetch("/api/recommend", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: query,
-        numberOfResults: 5,
-        keyword: isKeyword
-      }),
-    });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  const aiparam = {
+    searchQuery: inputValue,
+    categories: selectedCategories,
+    query: query,
+    keyword: isKeyword
+  };
+
+  const AiUrl = '/recommend'
+  const AiSearch = async () => {
+    try {
+      const response = await instance_ai.post(AiUrl,aiparam,
+      {
+
+        headers: { "Content-Type": "application/json" },      });
+
+        console.log(response);  
+
+      setAiList(response.data);
+      setShowBookstoreList(true);
+    } catch (error) {
+      if (error) {
+        console.error("Error data:", error.response);
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+      } else {
+        console.error('Error message:', error.message);
+      }
+      console.error("Error config:", error.config);
     }
-
-    const data = await response.json();
-    // console.log("Received data:", data);
-
-    setAiList(data);
-    setShowBookstoreList(true);
-    // console.log(aiList)
-
-  } catch (error) {
-    console.error("Error during search:", error);
-    // Handle the error appropriately, e.g., show an error message to the user
-  }
+  };
+ AiSearch()
 };
 
   const buttonVariants = {
@@ -136,33 +186,7 @@ const handleSearch = async () => {
   };
 
 
-  // const AiSearch = async (date: string) => {
-
-  //   const apiUrl = `/reservation`;
-  //   try {
-  //     const response = await instance_th.post(apiUrl, {
-  //       params: {
-  //         bookstore: bookstores.FCLTY_NM,
-  //         date: date,
-  //       },
-  //       headers: { "Content-Type": "application/json" },
-  //     });
-
-  //     const result = response.data;
-
-  //     // Extract available times from the result
-  //     const availability: string[] = result
-  //       .filter((timeSlot: { isReservation: boolean }) => !timeSlot.isReservation)
-  //       .map((timeSlot: { time: string }) => timeSlot.time);
-
-  //     setAvailableTimes(availability); // Set available times based on response
-  //     setIsAvailabilityError(false);
-  //   } catch (error) {
-  //     console.error("Error occurred:", error);
-  //     setIsAvailabilityError(true);
-  //     setAvailableTimes([]); // Reset available times on error
-  //   }
-  // };
+ 
 
 
 

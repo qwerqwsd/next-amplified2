@@ -2,6 +2,7 @@ import React from 'react';
 import { BiTrash } from "react-icons/bi";
 import ViewDetailPage from "./viewDetail";
 import { Bookstore } from '../pages/app';
+import "./../app/globals.css";
 
 
 
@@ -14,7 +15,7 @@ interface AppointmentInfoProps {
 const BookstoreInfo: React.FC<AppointmentInfoProps> = ({ bookstores, viewDetail }) => {
   return (
     <>
-      <li className="px-3 py-3 flex items-start">
+      <li className="px-3 py-3 flex items-start dark:bg-black dark:text-white rounded-2xl">
       
         <div className="flex-grow relative">
         <div className='p-2 absolute right-0'>
@@ -34,7 +35,7 @@ const BookstoreInfo: React.FC<AppointmentInfoProps> = ({ bookstores, viewDetail 
             일요일 문 여는 시간 {bookstores.SUN_OPN_BSNS_TIME} - {bookstores.SUN_CLOS_TIME}
           </span>
         </div>
-        <ViewDetailPage bookstores={bookstores} />
+        <ViewDetailPage bookstores={bookstores} className='dark:bg-black dark:text-white'/>
       </li>
 
     </>

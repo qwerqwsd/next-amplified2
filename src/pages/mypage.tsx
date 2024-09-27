@@ -3,8 +3,8 @@ import "./../app/globals.css";
 
 
 
-
-import React from 'react';
+import axios from "axios";
+import React, { useEffect } from 'react';
 import { BiSolidUser } from 'react-icons/bi';
 import { NavComponent } from '../components/nav';
 import { useAuth } from '../hooks/useAuth';
@@ -33,8 +33,48 @@ const useMyPage = (): UseMyPageReturn => {
 };
 
 
+
+const instance_th = axios.create({
+  baseURL: "https://www.taehyun35802.shop",
+});
+
+
 const MyPage: React.FC = () => {
   const { isLoggedIn, userInfo, logout } = useMyPage();
+
+
+
+
+
+  // const MyPageFunction = async (date: string) => {
+
+
+  //   const apiUrl = `/mypage`;
+  //   try {
+  //     const response = await instance_th.get(apiUrl, {
+  //       params: {
+  //         customer: userInfo ? userInfo.email
+  //       },
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+
+  //     const result = response.data;
+
+  //     // Extract available times from the result
+  //     const availability: string[] = result
+  //       .filter(
+  //         (timeSlot: { isReservation: boolean }) => !timeSlot.isReservation
+  //       )
+  //       .map((timeSlot: { time: string }) => timeSlot.time);
+
+  //   } catch (error) {
+  //     console.error("Error occurred:", error);
+  //   }
+  // };
+
+
+
+
 
   return (
     <>
@@ -45,7 +85,7 @@ const MyPage: React.FC = () => {
           style={{ padding: "56px 0 0 0" }}
         >
           <div className="flex w-11/12 md:w-10/12 flex gap-x-4 mt-16 flex-col gap-4">
-            <div className="flex gap-4">
+            <div className="flex gap-4 ">
               <BiSolidUser className="text-9xl rounded-full bg-white w-40 h-40" />
               <div className="flex-col items-top">
                 <h1>{userInfo ? userInfo.username : '사용자 이름'}</h1>

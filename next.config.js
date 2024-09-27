@@ -34,7 +34,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: `http://k8s-default-bookstor-601da9da3c-14882156.ap-northeast-2.elb.amazonaws.com/:path*`,
+        destination: "https://www.taehyun35802.shop/:path*",
       },
     ];
   },

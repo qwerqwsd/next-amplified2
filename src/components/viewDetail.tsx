@@ -11,19 +11,23 @@ type ViewDetailPageProps = {
 };
 
 const instance_th = axios.create({
-  baseURL: "http://k8s-default-bookstor-601da9da3c-1598983671.ap-northeast-2.elb.amazonaws.com",
+  baseURL:
+    "https://www.taehyun35802.shop",
 });
 
 const ViewDetailPage: React.FC<ViewDetailPageProps> = ({
   bookstores,
   className,
 }) => {
-  const [isAvailabilityError, setIsAvailabilityError] = useState<boolean>(false);
+  const [isAvailabilityError, setIsAvailabilityError] =
+    useState<boolean>(false);
   const { isLoggedIn, userInfo } = useAuth();
   const [date, setDate] = useState("");
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<"reservation" | "map">("reservation");
+  const [activeTab, setActiveTab] = useState<"reservation" | "map">(
+    "reservation"
+  );
   const modalRef = useRef<HTMLDivElement>(null);
   const [reservationTime, setReservationTime] = useState<string | null>(null);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]); // Initialize as an array
@@ -69,7 +73,9 @@ const ViewDetailPage: React.FC<ViewDetailPageProps> = ({
 
       // Extract available times from the result
       const availability: string[] = result
-        .filter((timeSlot: { isReservation: boolean }) => !timeSlot.isReservation)
+        .filter(
+          (timeSlot: { isReservation: boolean }) => !timeSlot.isReservation
+        )
         .map((timeSlot: { time: string }) => timeSlot.time);
 
       setAvailableTimes(availability); // Set available times based on response
@@ -109,7 +115,9 @@ const ViewDetailPage: React.FC<ViewDetailPageProps> = ({
     } catch (error) {
       console.error("오류 발생:", error);
       if (axios.isAxiosError(error)) {
-        setMessage("오류가 발생했습니다: " + (error.response?.data || error.message));
+        setMessage(
+          "오류가 발생했습니다: " + (error.response?.data || error.message)
+        );
       } else {
         setMessage("오류가 발생했습니다: 알 수 없는 오류");
       }
@@ -119,18 +127,31 @@ const ViewDetailPage: React.FC<ViewDetailPageProps> = ({
   return (
     <>
       {isModalOpen && (
-        <div className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10 ${className}`}>
-          <div className="bg-white p-4 rounded-2xl w-full max-w-screen-lg" ref={modalRef}>
+        <div
+          className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10 ${className} dark:bg-black dark:text-white`}
+        >
+          <div
+            className="bg-white p-4 rounded-2xl w-full max-w-screen-lg"
+            ref={modalRef}
+          >
             <div className="flex">
               <div className="flex border border-gray-1 rounded-2xl">
                 <button
-                  className={`py-2 px-4 rounded-2xl ${activeTab === "reservation" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
+                  className={`py-2 px-4 rounded-2xl ${
+                    activeTab === "reservation"
+                      ? "bg-blue-500 text-white"
+                      : "hover:bg-gray-200"
+                  }`}
                   onClick={() => setActiveTab("reservation")}
                 >
                   예약
                 </button>
                 <button
-                  className={`py-2 px-4 rounded-2xl ${activeTab === "map" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
+                  className={`py-2 px-4 rounded-2xl ${
+                    activeTab === "map"
+                      ? "bg-blue-500 text-white"
+                      : "hover:bg-gray-200"
+                  }`}
                   onClick={() => setActiveTab("map")}
                 >
                   지도
@@ -165,7 +186,9 @@ const ViewDetailPage: React.FC<ViewDetailPageProps> = ({
                       />
                     </div>
                     {isAvailabilityError && (
-                      <p className="text-yellow-500">모든 시간대가 선택 가능합니다.</p>
+                      <p className="text-yellow-500">
+                        모든 시간대가 선택 가능합니다.
+                      </p>
                     )}
                     {/* <div className="grid grid-cols-4 gap-4">
                       {availableTimes.map((time) => (
@@ -181,23 +204,23 @@ const ViewDetailPage: React.FC<ViewDetailPageProps> = ({
                     </div> */}
 
                     <div className="grid grid-cols-4 gap-4">
-  {availableTimes.map((time) => (
-    <button
-      key={time}
-      className={`py-2 px-4 border rounded-2xl ${
-        reservationTime === time
-          ? "bg-blue-500 text-white"
-          : availableTimes.includes(time)
-          ? "bg-gray-100 hover:bg-gray-200"
-          : "bg-gray-300 cursor-not-allowed" // Style for unavailable times
-      }`}
-      onClick={() => handleTimeSelection(time)}
-      // disabled={!availableTimes.includes(time)} // Keep the disabled logic for accessibility
-    >
-      {time}
-    </button>
-  ))}
-</div>
+                      {availableTimes.map((time) => (
+                        <button
+                          key={time}
+                          className={`py-2 px-4 border rounded-2xl ${
+                            reservationTime === time
+                              ? "bg-blue-500 text-white"
+                              : availableTimes.includes(time)
+                              ? "bg-gray-100 hover:bg-gray-200"
+                              : "bg-gray-300 cursor-not-allowed" // Style for unavailable times
+                          }`}
+                          onClick={() => handleTimeSelection(time)}
+                          // disabled={!availableTimes.includes(time)} // Keep the disabled logic for accessibility
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
 
                     <button
                       type="submit"
@@ -225,8 +248,18 @@ const ViewDetailPage: React.FC<ViewDetailPageProps> = ({
           </div>
         </div>
       )}
-      <button onClick={() => openModal("reservation")} className="p-2 border rounded-2xl">예약하기</button>
-      <button onClick={() => openModal("map")} className="p-2 border rounded-2xl">지도보기</button>
+      <button
+        onClick={() => openModal("reservation")}
+        className="p-2 border rounded-2xl"
+      >
+        예약하기
+      </button>
+      <button
+        onClick={() => openModal("map")}
+        className="p-2 border rounded-2xl"
+      >
+        지도보기
+      </button>
     </>
   );
 };
