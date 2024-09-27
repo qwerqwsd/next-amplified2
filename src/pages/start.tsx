@@ -1,6 +1,6 @@
 "use client";
 import "./../app/globals.css";
-import Script from 'next/script';
+import Script from "next/script";
 import axios from "axios";
 import Link from "next/link";
 import { NavComponent } from "../components/nav";
@@ -15,13 +15,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bookstore } from "../pages/app";
 import { BiCurrentLocation, BiChevronUp, BiChevronDown } from "react-icons/bi";
 import BookstoreListSkeleton from "../components/BookstoreListSkeleton";
-import Gradient from '../components/gradient'
+import Gradient from "../components/gradient";
 
 const instance_ai = axios.create({
   baseURL: "https://www.taehyun35802.shop",
 });
-
-
 
 const Start: React.FC<AppProps> = ({ Component, pageProps }) => {
   const { isLoggedIn, userInfo, logout } = useAuth();
@@ -32,7 +30,6 @@ const Start: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [aiList, setAiList] = useState<any[]>([]);
   const [showBookstoreList, setShowBookstoreList] = useState<Boolean>(false); // Toggle state for bookstore list
   const [isLoading, setIsLoading] = useState(false);
-
 
   const categories = [
     "모임",
@@ -91,8 +88,8 @@ const Start: React.FC<AppProps> = ({ Component, pageProps }) => {
     "방식",
     "좌석",
     "체험",
-    "음식"
-];
+    "음식",
+  ];
   const getFacilityInfo = (
     FCLTY_NM: string
   ): { name: string | null; description: string | null } => {
@@ -113,50 +110,46 @@ const Start: React.FC<AppProps> = ({ Component, pageProps }) => {
     );
   };
 
-const handleSearch = async () => {
-  const query = inputValue + " " + selectedCategories.join(" ");
-  const isKeyword = !inputValue && selectedCategories.length > 0;
-  setIsLoading(true)
-  console.log("Sending to backend:", {
-    searchQuery: inputValue,
-    categories: selectedCategories,
-    query: query,
-    keyword: isKeyword
-  });
+  const handleSearch = async () => {
+    const query = inputValue + " " + selectedCategories.join(" ");
+    const isKeyword = !inputValue && selectedCategories.length > 0;
+    setShowBookstoreList(true);
 
+    setIsLoading(true);
+    console.log("Sending to backend:", {
+      searchQuery: inputValue,
+      categories: selectedCategories,
+      query: query,
+      keyword: isKeyword,
+    });
 
-  const aiparam = {
-    searchQuery: inputValue,
-    categories: selectedCategories,
-    query: query,
-    keyword: isKeyword
-  };
+    const aiparam = {
+      searchQuery: inputValue,
+      categories: selectedCategories,
+      query: query,
+      keyword: isKeyword,
+    };
 
-  const AiUrl = '/recommend'
-  const AiSearch = async () => {
-    try {
-      const response = await instance_ai.post(AiUrl,aiparam,
-      {
+    const AiUrl = "/recommend";
+    const AiSearch = async () => {
+      try {
+        const response = await instance_ai.post(AiUrl, aiparam, {
+          headers: { "Content-Type": "application/json" },
+        });
+        const result = response.data;
+        console.log(result);
 
-        headers: { "Content-Type": "application/json" },      });
-
-        console.log(response);  
-
-      setAiList(response.data);
-      setShowBookstoreList(true);
-    } catch (error) {
-      if (error) {
-        console.error("Error data:", error.response);
-      } else if (error.request) {
-        console.error("Error request:", error.request);
-      } else {
-        console.error('Error message:', error.message);
+        setAiList(result);
+        console.log("Updated aiList:", result);
+        setIsLoading(false);
+      } catch (error) {
+        if (error) {
+          console.error("Error data:", error);
+        } 
       }
-      console.error("Error config:", error.config);
-    }
+    };
+    AiSearch();
   };
- AiSearch()
-};
 
   const buttonVariants = {
     initial: { scale: 1, x: 0 },
@@ -185,11 +178,6 @@ const handleSearch = async () => {
     },
   };
 
-
- 
-
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -204,11 +192,9 @@ const handleSearch = async () => {
     fetchData();
   }, []);
 
-
   return (
     <>
-    
-    <Script id="jennifer-inline-script" strategy="lazyOnload">
+      <Script id="jennifer-inline-script" strategy="lazyOnload">
         {`
           (function(j, ennifer) {
               j['dmndata'] = [];
@@ -221,39 +207,39 @@ const handleSearch = async () => {
         `}
       </Script>
 
-<style jsx>{`
-  .shining-text {
-    background: linear-gradient(
-      120deg,        /* Tilted gradient */
-      #000000 0%,    /* Black */
-      #2e8b57 25%,   /* Darker Mint (Sea Green) */
-      #006b3c 50%,   /* Even Darker Mint */
-      #2e8b57 75%,   /* Darker Mint (Sea Green) */
-      #ffffff 100%   /* White */
-    );
-    background-size: 200% auto;
-    color: transparent;
-    background-clip: text;
-    -webkit-background-clip: text;
-  }
-`}</style>
-<main className="relative">
-  <div className="z-[999] fixed left-[10vw] right[10vw] justify-center w-full">
-    <NavComponent
-      className="mx-auto"
-      isLoggedIn={isLoggedIn}
-      username={userInfo ? userInfo.username : ""}
-      logout={logout}
-    />
-  </div>
-        <Gradient className="w-[full] blur-md brightness-150"/>
+      <style jsx>{`
+        .shining-text {
+          background: linear-gradient(
+            120deg,
+            /* Tilted gradient */ #000000 0%,
+            /* Black */ #2e8b57 25%,
+            /* Darker Mint (Sea Green) */ #006b3c 50%,
+            /* Even Darker Mint */ #2e8b57 75%,
+            /* Darker Mint (Sea Green) */ #ffffff 100% /* White */
+          );
+          background-size: 200% auto;
+          color: transparent;
+          background-clip: text;
+          -webkit-background-clip: text;
+        }
+      `}</style>
+      <main className="relative">
+        <div className="z-[999] fixed left-[10vw] right[10vw] justify-center w-full">
+          <NavComponent
+            className="mx-auto"
+            isLoggedIn={isLoggedIn}
+            username={userInfo ? userInfo.username : ""}
+            logout={logout}
+          />
+        </div>
+        <Gradient className="w-[full] blur-md brightness-150" />
         <div className="mt-[60px] h-full mx-auto">
           <div className="relative flex items-center justify-center w-screen ">
             <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-full">
               <main className="relative w-screen h-screen">
                 <div className="flex items-center justify-center w-full h-full ">
                   <div className="absolute flex items-center justify-center w-full h-full">
-                    <div className="container flex flex-col md:flex-row md:justify-between items-center mx-auto w-[90%] md:w-[80%]">
+                    <div className="container flex gap-4 flex-col md:flex-row md:justify-between items-center mx-auto w-[90%] md:w-[80%]">
                       <div className="flex flex-col justify-center md:w-1/2 w-full md:text-left text-center">
                         <h1 className="pt-0.5 spacial-shadow ">오늘의 책방</h1>
                         <div className="pb-4 pr-2 font-light text-base hidden md:block">
@@ -287,7 +273,7 @@ const handleSearch = async () => {
                                 animate="visible"
                                 exit="exit"
                               >
-                                <div className="relative rounded-2xl border-green max-w-full mr-4 font-semibold aiSearch">
+                                <div className="relative mx-auto rounded-2xl border-green max-w-full font-semibold aiSearch">
                                   <div
                                     onClick={handleSearch}
                                     className="absolute bg-white border p-1 rounded-lg bg-green text-2xl hover:drop-shadow-[2px] active:shadow-inner 	--tw-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06) hover:shadow-sm hover:shadow-green-600 right-0 top-1/2 transform -translate-x-1/3 -translate-y-1/2"
@@ -304,7 +290,7 @@ const handleSearch = async () => {
                                   />
                                 </div>
                                 <motion.div
-                                  className="flex flex-wrap gap-2 mt-2"
+                                  className="flex flex-wrap gap-2 mt-2 max-h-[105px] overflow-y-auto"
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
                                   transition={{ delay: 0.2 }}
@@ -316,7 +302,7 @@ const handleSearch = async () => {
                                       className={`px-2 py-1 ${
                                         selectedCategories.includes(category)
                                           ? "bg-green-700 text-gray-100 special-shadow-button"
-                                          : "bg-gray-100 text-gray-900 special-toggle" 
+                                          : "bg-gray-100 text-gray-900 special-toggle"
                                       } rounded-lg text-[14px] z-10`}
                                       initial={{ opacity: 0, y: 20 }}
                                       animate={{ opacity: 1, y: 0 }}
@@ -337,38 +323,48 @@ const handleSearch = async () => {
                           {/* Bookstore List */}
 
                           <AnimatePresence>
-  {showBookstoreList && (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-    >
-      {isLoading ? (
-        <BookstoreListSkeleton />
-      ) : (
-        <ul className="z-[100] divide-y divide-white py-4 px-4 w-full rounded-2xl max-h-[600px] overflow-y-auto box-extrude">
-          {aiList.map((datas) => (
-            <React.Fragment key={datas.FCLTY_NM}>
-              <li className="p-2 pb-4 my-2 relative special-shadow-button bg-white rounded-2xl">
-                <button className="flex" onClick={() => {}}>
-                  <div className="flex text-left py-2 absolute right-4 top-[18px] hover:drop-shadow-[2px] active:shadow-inner hover:shadow-sm hover:shadow-green-600 px-4 rounded-2xl ml-auto text-bold text-green-600 hover:text-green-600 right-0 top-1/2">
-                    위치 보기
-                  </div>
-                </button>
-                <h3 className="font-semibold text-lg">
-                  {datas.FCLTY_NM || "Unknown Facility"}
-                </h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  {datas.describe || "No description available"}
-                </p>
-              </li>
-            </React.Fragment>
-          ))}
-        </ul>
-      )}
-    </motion.div>
-  )}
-</AnimatePresence>
+                            {showBookstoreList && (
+                              <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                              >
+                                {isLoading ? (
+                                  <BookstoreListSkeleton />
+                                ) : (
+                                  <ul className="z-[100] divide-y divide-white py-4 px-4 w-full rounded-2xl max-h-[600px] overflow-y-auto box-extrude">
+                                    {aiList.map((datas, index) => (
+                                      <React.Fragment key={datas.FCLTY_NM}>
+                                        
+                                        <li className="p-2 pb-4 my-2 relative special-shadow-button bg-white rounded-2xl">
+                                          <button
+                                            className="flex"
+                                            onClick={() => {}}
+                                          >
+                                            <div className="flex text-left py-2 absolute right-4 top-[18px] hover:drop-shadow-[2px] active:shadow-inner hover:shadow-sm hover:shadow-green-600 px-4 rounded-2xl ml-auto text-bold text-green-600 hover:text-green-600 right-0 top-1/2">
+                                              위치 보기
+                                            </div>
+                                          </button>
+                                          <h3 className="font-semibold text-lg">
+                                            {datas.FCLTY_NM ||
+                                              "Unknown Facility"}
+                                          </h3>
+                                          <p className="text-sm text-gray-600 mt-1">
+                                            {datas.describe ||
+                                              "No description available"}
+                                          </p>
+                                          <p className="text-sm text-gray-500 mt-1">
+                                            {datas.FCLTY_ROAD_NM_ADDR ||
+                                              "Address not available"}
+                                          </p>
+                                        </li>
+                                      </React.Fragment>
+                                    ))}
+                                  </ul>
+                                )}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
 
                         {!showBookstoreList && (

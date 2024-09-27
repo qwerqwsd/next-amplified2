@@ -46,6 +46,50 @@ const MyPage: React.FC = () => {
 
 
 
+
+
+
+
+  const MyPageFunction = async () => {
+
+    const myData = {
+      customer: userInfo ? userInfo.email : "사용자 이메일 주소",
+    };
+
+    const myUrl = `/mypage`;
+    try {
+      const response = await instance_th.get(myUrl, {
+        params: {
+          customer: userInfo ? userInfo.email : '정보 없음'
+        },
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const result = response.data;
+      console.log(result)
+      // const availability: string[] = result
+      //   .filter(
+      //     (timeSlot: { isReservation: boolean }) => !timeSlot.isReservation
+      //   )
+      //   .map((timeSlot: { time: string }) => timeSlot.time);
+
+
+    } catch (error) {
+      console.error("Error occurred:", error);
+    }
+  };
+
+
+  useEffect(() => {
+
+  MyPageFunction()
+
+
+}, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행
+
+
+
+
   // const MyPageFunction = async (date: string) => {
 
 
